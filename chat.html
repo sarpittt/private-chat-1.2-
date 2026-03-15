@@ -1,0 +1,129 @@
+<!DOCTYPE html>
+<html>
+<head>
+<title>Private Terminal Chat</title>
+
+<style>
+body{
+background:black;
+color:#00ff00;
+font-family:monospace;
+padding:20px;
+}
+
+#chat{
+height:80vh;
+overflow:auto;
+margin-bottom:10px;
+}
+
+input{
+width:100%;
+background:black;
+color:#00ff00;
+border:none;
+font-family:monospace;
+outline:none;
+font-size:16px;
+}
+</style>
+
+</head>
+
+<body>
+
+    <div id="login">
+<h3>Private Chat Login</h3>
+
+<input id="username" placeholder="username"><br><br>
+
+<input id="password" type="password" placeholder="password"><br><br>
+
+<button onclick="login()">Enter</button>
+
+</div>
+
+<div id="chat" style="display:none"></div>
+<input id="msg" placeholder="type message..." style="display:none">
+
+
+<script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-app.js"></script>
+<script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-database.js"></script>
+
+<script>
+
+const firebaseConfig = {
+apiKey: "AIzaSyARUCHCwujTP07tfEdAtwmZPrPi9qEXL-A",
+authDomain: "private-chat-e9047.firebaseapp.com",
+databaseURL: "https://private-chat-e9047-default-rtdb.firebaseio.com",
+projectId: "private-chat-e9047",
+storageBucket: "private-chat-e9047.firebasestorage.app",
+messagingSenderId: "782417310059",
+appId: "1:782417310059:web:02725e537390bbc062dc2e"
+};
+
+firebase.initializeApp(firebaseConfig);
+
+const db = firebase.database();
+
+const chat = document.getElementById("chat");
+const msg = document.getElementById("msg");
+
+/* ask username */
+let username = "";
+
+msg.addEventListener("keypress", function(e){
+
+if(e.key === "Enter" && msg.value.trim() !== ""){
+
+db.ref("messages").push({
+name: username,
+text: msg.value
+});
+
+msg.value="";
+
+}
+
+});
+
+/* show messages */
+
+db.ref("messages").on("child_added", function(data){
+
+let message = data.val();
+
+chat.innerHTML += "<div>"+message.name+"/> "+message.text+"</div>";
+
+/* auto scroll */
+
+chat.scrollTop = chat.scrollHeight;
+
+});
+
+function login(){
+
+let u = document.getElementById("username").value;
+let p = document.getElementById("password").value;
+
+if((u === "AARU" && p === "ARPIT@03052011") || (u === "SIIDHI" && p === "SIDDHI14042011")){
+
+username = u;
+
+document.getElementById("login").style.display="none";
+document.getElementById("chat").style.display="block";
+document.getElementById("msg").style.display="block";
+
+msg.focus();
+
+}
+else{
+
+alert("Wrong username or password");
+
+}
+}
+
+</script>
+</body>
+</html>
